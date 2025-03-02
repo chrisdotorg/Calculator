@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+    environment {
+        IMAGE_NAME = "richdotcom101/calc"
+        IMAGE_TAG = "latest"
+    }
+    stages {
+        stage('Stage 1: Git Clone') {
+            steps {
+                git 'https://github.com/chrisdotorg/Calculator1.git'
+            }
+        }
+        stage('Stage 2: Build Project') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage('Stage 3: Build Docker Image') {
+            steps {
+                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
+            }
+        }
+        stage('Stage 4: Push Image to Docker Hub') {
+            steps {
+                script {
+                         withCredentials([usernamePassword(credentialsId: 'docker_hub_cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                     sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                      sh 'docker push $IMAGE_NAME:$IMAGE_TAG'
+                }   }
+            }
+        }
+        stage('Stage 5: Deploy with Ansible') {
+            steps {
+                 sh 'ansible-playbook -i inventory.ini deploy.yml'
+            }
+        }
+    }
+}
