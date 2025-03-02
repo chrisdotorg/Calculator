@@ -15,5 +15,12 @@ pipeline{
                 sh 'mvn clean package'
             }
         }
+        stage ("Docker Image"){
+            steps {
+                sh 'pwd'
+                sh 'ls -l'
+                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
+            }
+        }
     }
 }
