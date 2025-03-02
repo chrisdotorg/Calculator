@@ -23,7 +23,7 @@ class CalculatorTest {
 
     @Test
     void testPowerFunction() {
-        assertEquals(8.0, Calculator.power(2, 3), 0.0001);
+        assertEquals(16.0, Calculator.power(2, 4), 0.0001);
     }
 
     @Test
