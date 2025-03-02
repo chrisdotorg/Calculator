@@ -10,5 +10,10 @@ pipeline{
                 git 'https://github.com/chrisdotorg/Calculator.git'
             }
         }
+        stage("stage 2 : Build project"){
+            steps{
+                sh 'mvn clean package'
+            }
+        }
     }
 }
