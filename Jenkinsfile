@@ -15,14 +15,14 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
-        stage("Building Docker Image") {
+        stage("Stage 3 : Building Docker Image") {
             steps {
                 sh 'pwd'
                 sh 'ls -l'
                 sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
             }
         }
-        stage("Pushing Docker Image to Docker Hub") {
+        stage("Stage 4 : Pushing Docker Image to Docker Hub") {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker_hub_cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     script {
@@ -32,7 +32,7 @@ pipeline {
                 }
             }
         }
-        stage("Deployment with Ansible"){
+        stage("Stage 5 : Deployment with Ansible"){
             steps{
                 sh 'ansible-playbook -i inventory.ini deploy.yml'
             }
